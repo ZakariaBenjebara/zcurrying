@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.zgeeks.utils</groupId>
+  <artifactId>zcurrying</artifactId>
+  <version>1.0</version>
+  <name>zgeeks currying utilities</name>
+  <packaging>jar</packaging>
+
+  <scm>
+      <connection>https://github.com/ZakariaBenjebara/zcurrying.git</connection>
+      <tag>zgeeks-currying-1.0</tag>
+  </scm>
+
+  <properties>
+         <!-- used for testing so far -->
+         <java.version>1.8</java.version>
+
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+   </properties>
+
+     <build>
+         <testSourceDirectory>src/test/java</testSourceDirectory>
+         <plugins>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.0</version>
+                 <configuration>
+                     <source>${java.version}</source>
+                     <target>${java.version}</target>
+                 </configuration>
+             </plugin>
+             <plugin>
+                 <artifactId>maven-surefire-plugin</artifactId>
+                 <version>2.18.1</version>
+                 <configuration>
+                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                 </configuration>
+             </plugin>
+         </plugins>
+         <pluginManagement>
+             <plugins>
+                 <plugin>
+                     <artifactId>maven-source-plugin</artifactId>
+                     <version>2.3</version>
+                 </plugin>
+             </plugins>
+         </pluginManagement>
+     </build>
+
+     <dependencies>
+         <!-- static analysis annotations -->
+         <dependency>
+             <groupId>com.google.code.findbugs</groupId>
+             <artifactId>jsr305</artifactId>
+             <version>3.0.0</version>
+         </dependency>
+
+         <dependency>
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>4.12</version>
+             <scope>test</scope>
+         </dependency>
+     </dependencies>
+</project>
