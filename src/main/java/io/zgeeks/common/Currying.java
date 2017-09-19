@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class Currying<R> {
+public abstract class Currying<R, T> {
 
     public interface Fun3<U1, U2, U3, R> extends Function<U1, Function<U2, Function<U3, R>>> {
 
@@ -23,21 +23,21 @@ public abstract class Currying<R> {
         }
     }
 
-    public abstract <T extends Tuple2> R apply(Supplier<T> supplier);
+    public abstract R apply(Supplier<T> supplier);
 
-    public static <U1, U2, R> Currying<R> from(BiFunction<U1, U2, R> function) {
+    public static <U1, U2, R> Currying<R, Tuple2> of(BiFunction<U1, U2, R> function) {
         return new Currying2(function);
     }
 
-    public static <U1, U2, U3, R> Currying<R> from(Fun3<U1, U2, U3, R> function) {
+    public static <U1, U2, U3, R> Currying<R, Tuple3> of(Fun3<U1, U2, U3, R> function) {
         return new Currying3(function);
     }
 
-    public static <U1, U2, U3, U4, R> Currying<R> from(Fun4<U1, U2, U3, U4, R> function) {
+    public static <U1, U2, U3, U4, R> Currying<R, Tuple4> of(Fun4<U1, U2, U3, U4, R> function) {
         return new Currying4(function);
     }
 
-    private final static class Currying2<U1, U2, R> extends Currying<R> {
+    private final static class Currying2<U1, U2, R> extends Currying<R, Tuple2> {
 
         final BiFunction<U1, U2, R> function;
 
@@ -46,8 +46,7 @@ public abstract class Currying<R> {
         }
 
         @Override
-        public <T extends Tuple2> R apply(Supplier<T> supplier) {
-            Objects.requireNonNull(supplier, "supplier == null");
+        public R apply(Supplier<Tuple2> supplier) {
             final Tuple2<U1, U2> tuple = supplier.get();
             return function.apply(tuple.t1(), tuple.t2());
         }
@@ -55,32 +54,32 @@ public abstract class Currying<R> {
 
     private final static class Currying3<U1, U2, U3, R,
                                         F extends Function<U1, Function<U2, Function<U3, R>>>>
-                                        extends Currying<R> {
+                                        extends Currying<R, Tuple3> {
         final F function;
 
         public Currying3(F function) {
-            this.function = function;
+            this.function = Objects.requireNonNull(function, "function == null");
         }
 
         @Override
-        public <T extends Tuple2> R  apply(Supplier<T> supplier) {
-            final Tuple3<U1, U2, U3> tuple = (Tuple3<U1, U2, U3>) supplier.get();
+        public R apply(Supplier<Tuple3> supplier) {
+            final Tuple3<U1, U2, U3> tuple = supplier.get();
             return function.apply(tuple.t1()).apply(tuple.t2()).apply(tuple.t3());
         }
     }
 
     private final static class Currying4<U1, U2, U3, U4, R,
                                         F extends Function<U1, Function<U2, Function<U3, Function<U4, R>>>>>
-                                        extends Currying<R> {
+                                        extends Currying<R, Tuple4> {
         final F function;
 
         public Currying4(F function) {
-            this.function = function;
+            this.function = Objects.requireNonNull(function, "function == null");
         }
 
         @Override
-        public <T extends Tuple2> R  apply(Supplier<T> supplier) {
-            final Tuple4<U1, U2, U3, U4> tuple = (Tuple4<U1, U2, U3, U4>) supplier.get();
+        public R apply(Supplier<Tuple4> supplier) {
+            final Tuple4<U1, U2, U3, U4> tuple = supplier.get();
             return function.apply(tuple.t1()).apply(tuple.t2()).apply(tuple.t3()).apply(tuple.t4());
         }
     }
