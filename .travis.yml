@@ -1,0 +1,36 @@
+sudo: false
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+# https://github.com/travis-ci/travis-ci/issues/3259#issuecomment-130860338
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+install: mvn -B install -U -DskipTests=true -f $ROOT_POM
+
+# https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
+script: travis_wait 60 mvn -B verify -U -Dmaven.javadoc.skip=true -f $ROOT_POM
+
+after_success:
+  - util/deploy_snapshot.sh
+
+after_failure:
+  - util/print_surefire_reports.sh
+
+cache:
+  directories:
+  - $HOME/.m2
+
+env:
+  matrix:
+    - ROOT_POM="pom.xml"
+
+branches:
+  only:
+    - master
+    - /^feature.*$/
